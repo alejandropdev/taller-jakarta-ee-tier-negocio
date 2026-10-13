@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>co.edu.javeriana</groupId>
+    <artifactId>resource-management</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>pom</packaging>
+
+    <name>Taller No.2 - Jakarta EE (tier de negocio con EJB)</name>
+
+    <properties>
+        <maven.compiler.release>17</maven.compiler.release>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <jakartaee.version>10.0.0</jakartaee.version>
+        <wildfly.client.bom.version>37.0.1.Final</wildfly.client.bom.version>
+        <junit.version>5.11.3</junit.version>
+        <mockito.version>5.14.2</mockito.version>
+    </properties>
+
+    <modules>
+        <module>rm-domain</module>
+        <module>rm-business</module>
+        <module>rm-data</module>
+        <module>rm-web</module>
+        <module>rm-ear</module>
+        <module>rm-client</module>
+    </modules>
+
+    <dependencyManagement>
+        <dependencies>
+            <!-- API de la plataforma: la implementación la provee WildFly -->
+            <dependency>
+                <groupId>jakarta.platform</groupId>
+                <artifactId>jakarta.jakartaee-api</artifactId>
+                <version>${jakartaee.version}</version>
+                <scope>provided</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>co.edu.javeriana</groupId>
+                <artifactId>rm-domain</artifactId>
+                <version>${project.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>co.edu.javeriana</groupId>
+                <artifactId>rm-business</artifactId>
+                <version>${project.version}</version>
+                <type>ejb</type>
+            </dependency>
+            <!-- Jar de cliente del módulo EJB: solo las interfaces de la vista remota -->
+            <dependency>
+                <groupId>co.edu.javeriana</groupId>
+                <artifactId>rm-business</artifactId>
+                <version>${project.version}</version>
+                <type>ejb-client</type>
+            </dependency>
+            <dependency>
+                <groupId>co.edu.javeriana</groupId>
+                <artifactId>rm-data</artifactId>
+                <version>${project.version}</version>
+                <type>ejb</type>
+            </dependency>
+            <dependency>
+                <groupId>co.edu.javeriana</groupId>
+                <artifactId>rm-web</artifactId>
+                <version>${project.version}</version>
+                <type>war</type>
+            </dependency>
+
+            <dependency>
+                <groupId>org.junit.jupiter</groupId>
+                <artifactId>junit-jupiter</artifactId>
+                <version>${junit.version}</version>
+                <scope>test</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.mockito</groupId>
+                <artifactId>mockito-junit-jupiter</artifactId>
+                <version>${mockito.version}</version>
+                <scope>test</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-compiler-plugin</artifactId>
+                    <version>3.13.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-surefire-plugin</artifactId>
+                    <version>3.5.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-jar-plugin</artifactId>
+                    <version>3.4.2</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-war-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ejb-plugin</artifactId>
+                    <version>3.3.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-ear-plugin</artifactId>
+                    <version>3.4.0</version>
+                </plugin>
+                <plugin>
+                    <groupId>org.codehaus.mojo</groupId>
+                    <artifactId>exec-maven-plugin</artifactId>
+                    <version>3.6.4</version>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+</project>

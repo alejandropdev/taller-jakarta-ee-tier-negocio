@@ -1,0 +1,10 @@
+target/
+*.class
+.idea/
+*.iml
+.vscode/
+docs/architecture/*.rendered.md
+docs/architecture/*.html
+
+# Material de trabajo local, no se versiona
+docs/instructions/

@@ -1,0 +1,13 @@
+services:
+  wildfly:
+    build: .
+    image: resource-management:latest
+    container_name: rm-wildfly
+    ports:
+      - "8080:8080"   # API REST y EJB remoto (http-remoting sobre el mismo puerto)
+      - "9990:9990"   # consola de administración
+    healthcheck:
+      test: ["CMD-SHELL", "curl -fsS http://localhost:8080/api/resource-requests || exit 1"]
+      interval: 5s
+      timeout: 3s
+      retries: 30

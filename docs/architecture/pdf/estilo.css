@@ -1,0 +1,9 @@
+/* Hoja de estilo de los PDF de arquitectura */
+body { font-family: -apple-system, "Helvetica Neue", Arial, sans-serif; max-width: 48rem; margin: 2rem auto; line-height: 1.5; color: #1a1a1a; }
+h1 { border-bottom: 2px solid #3b5998; padding-bottom: .3rem; }
+h2 { margin-top: 2rem; color: #3b5998; }
+table { border-collapse: collapse; width: 100%; margin: 1rem 0; font-size: .9rem; }
+th, td { border: 1px solid #ccc; padding: .4rem .6rem; text-align: left; vertical-align: top; }
+th { background: #eef1f7; }
+code { background: #f4f4f4; padding: .1rem .3rem; border-radius: 3px; font-size: .9em; }
+img, svg { max-width: 100%; display: block; margin: 1rem auto; }

@@ -1,0 +1,19 @@
+# Configuración de WildFly para el taller (se ejecuta al construir la imagen).
+embed-server --server-config=standalone.xml --std-out=echo
+
+# Identificador del nodo para el gestor de transacciones (Narayana)
+/subsystem=transactions:write-attribute(name=node-identifier, value=resource-management)
+
+# Datasource propio de la aplicación. El driver "h2" y su módulo ya vienen con WildFly,
+# por eso no hace falta instalar el controlador.
+data-source add --name=ResourceManagementDS \
+  --jndi-name=java:jboss/datasources/ResourceManagementDS \
+  --driver-name=h2 \
+  --connection-url="jdbc:h2:mem:resourcemanagement;DB_CLOSE_DELAY=-1;DB_CLOSE_ON_EXIT=FALSE" \
+  --user-name=sa --password=sa \
+  --min-pool-size=2 --max-pool-size=20
+
+# Libera la raíz "/" para el contexto del EAR
+/subsystem=undertow/server=default-server/host=default-host/location=\/:remove
+
+stop-embedded-server
