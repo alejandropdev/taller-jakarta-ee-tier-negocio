@@ -1,10 +1,9 @@
 # Arquitectura – Taller No.2 Jakarta EE (tier de negocio)
 
 Módulo de gestión de solicitudes de recursos en emergencias sobre **Jakarta EE 10 + WildFly 37**,
-con el tier de negocio implementado como **EJB de sesión** y desacoplado del mecanismo de
-persistencia.
+con el tier de negocio implementado como **EJB de sesión**.
 
-| Documento | Qué muestra |
+| Documento | Contenido |
 |-----------|-------------|
 | [01-componentes.md](01-componentes.md) | Componentes, tiers y contenido del EAR |
 | [02-desacople-negocio-datos.md](02-desacople-negocio-datos.md) | Cómo se desacopló el negocio del tier de datos |
@@ -13,7 +12,7 @@ persistencia.
 | [05-estados.md](05-estados.md) | Máquina de estados de la solicitud |
 | [06-modelo-datos.md](06-modelo-datos.md) | Tabla, unidad de persistencia y datasource |
 
-Los mismos documentos renderizados están en [pdf/](pdf/) y se regeneran con
+Los documentos renderizados están en [pdf/](pdf/), y generados con
 `./scripts/render-docs.sh`.
 
 ## Stack
@@ -46,6 +45,3 @@ Los mismos documentos renderizados están en [pdf/](pdf/) y se regeneran con
 |---|---|---|
 | `@Local` `ResourceRequestService` | La fachada REST, en la misma JVM | Por referencia |
 | `@Remote` `ResourceRequestServiceRemote` | Cliente Java en otra JVM | Por valor (los DTO son `Serializable`) |
-
-Ambas extienden `ResourceRequestOperations`, así que el contrato se escribe una sola vez. El tier
-de datos solo publica vista local: no se expone fuera del servidor.
