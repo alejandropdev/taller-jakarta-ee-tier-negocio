@@ -1,0 +1,55 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>co.edu.javeriana</groupId>
+        <artifactId>resource-management</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>rm-business</artifactId>
+    <packaging>ejb</packaging>
+    <name>Tier de negocio: EJB de sesion con las reglas del dominio</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>jakarta.platform</groupId>
+            <artifactId>jakarta.jakartaee-api</artifactId>
+        </dependency>
+        <!-- El dominio lo aporta lib/ del EAR -->
+        <dependency>
+            <groupId>co.edu.javeriana</groupId>
+            <artifactId>rm-domain</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.junit.jupiter</groupId>
+            <artifactId>junit-jupiter</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-junit-jupiter</artifactId>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ejb-plugin</artifactId>
+                <configuration>
+                    <ejbVersion>4.0</ejbVersion>
+                    <!-- Jar aparte con la vista remota, para que el cliente no cargue el bean -->
+                    <generateClient>true</generateClient>
+                    <clientIncludes>
+                        <clientInclude>co/edu/javeriana/rm/business/ResourceRequestOperations.class</clientInclude>
+                        <clientInclude>co/edu/javeriana/rm/business/ResourceRequestServiceRemote.class</clientInclude>
+                    </clientIncludes>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
