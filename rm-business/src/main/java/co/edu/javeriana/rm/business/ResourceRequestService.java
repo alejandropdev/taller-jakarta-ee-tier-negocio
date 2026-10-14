@@ -3,7 +3,7 @@ package co.edu.javeriana.rm.business;
 import jakarta.ejb.Local;
 
 /**
- * Clientes en la misma JVM, como la fachada REST. Paso por referencia.
+ * Clientes en la misma JVM, como la interfaz REST.
  */
 @Local
 public interface ResourceRequestService extends ResourceRequestOperations {
