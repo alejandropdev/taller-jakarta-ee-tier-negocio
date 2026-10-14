@@ -4,9 +4,6 @@ import co.edu.javeriana.rm.domain.dto.ResourceRequestDTO;
 import co.edu.javeriana.rm.domain.model.ResourceRequest;
 import java.util.List;
 
-/**
- * Traducir a DTO evita que las entidades JPA salgan del tier de negocio.
- */
 final class ResourceRequestMapper {
 
     private ResourceRequestMapper() {
