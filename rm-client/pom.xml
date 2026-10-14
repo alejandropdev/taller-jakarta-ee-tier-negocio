@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>co.edu.javeriana</groupId>
+        <artifactId>resource-management</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>rm-client</artifactId>
+    <packaging>jar</packaging>
+    <name>Cliente remoto: invoca el EJB de sesion por JNDI</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>co.edu.javeriana</groupId>
+            <artifactId>rm-domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>co.edu.javeriana</groupId>
+            <artifactId>rm-business</artifactId>
+            <type>ejb-client</type>
+        </dependency>
+        <!-- Se declara como dependencia (no como import): su pom trae la lista real de
+             artefactos del cliente EJB (jboss-ejb-client, wildfly-naming-client, etc.) -->
+        <dependency>
+            <groupId>org.wildfly</groupId>
+            <artifactId>wildfly-ejb-client-bom</artifactId>
+            <version>${wildfly.client.bom.version}</version>
+            <type>pom</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.codehaus.mojo</groupId>
+                <artifactId>exec-maven-plugin</artifactId>
+                <configuration>
+                    <mainClass>co.edu.javeriana.rm.client.RemoteClientMain</mainClass>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>

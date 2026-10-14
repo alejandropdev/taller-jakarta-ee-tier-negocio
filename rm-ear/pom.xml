@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <parent>
+        <groupId>co.edu.javeriana</groupId>
+        <artifactId>resource-management</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>rm-ear</artifactId>
+    <packaging>ear</packaging>
+    <name>Empaquetado desplegable (EAR)</name>
+
+    <dependencies>
+        <dependency>
+            <groupId>co.edu.javeriana</groupId>
+            <artifactId>rm-domain</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>co.edu.javeriana</groupId>
+            <artifactId>rm-business</artifactId>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>co.edu.javeriana</groupId>
+            <artifactId>rm-data</artifactId>
+            <type>ejb</type>
+        </dependency>
+        <dependency>
+            <groupId>co.edu.javeriana</groupId>
+            <artifactId>rm-web</artifactId>
+            <type>war</type>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <!-- El nombre del EAR es el "application name" de los nombres JNDI -->
+        <finalName>resource-management</finalName>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-ear-plugin</artifactId>
+                <configuration>
+                    <version>10</version>
+                    <defaultLibBundleDir>lib</defaultLibBundleDir>
+                    <skinnyWars>true</skinnyWars>
+                    <!-- Sin esto los modulos quedarian como co.edu.javeriana-rm-business-1.0.0-SNAPSHOT.jar
+                         y cambiaria el "module name" que usa el lookup JNDI -->
+                    <outputFileNameMapping>@{artifactId}@.@{extension}@</outputFileNameMapping>
+                    <modules>
+                        <jarModule>
+                            <groupId>co.edu.javeriana</groupId>
+                            <artifactId>rm-domain</artifactId>
+                            <bundleDir>lib</bundleDir>
+                            <bundleFileName>rm-domain.jar</bundleFileName>
+                            <includeInApplicationXml>false</includeInApplicationXml>
+                        </jarModule>
+                        <ejbModule>
+                            <groupId>co.edu.javeriana</groupId>
+                            <artifactId>rm-business</artifactId>
+                            <bundleFileName>rm-business.jar</bundleFileName>
+                        </ejbModule>
+                        <ejbModule>
+                            <groupId>co.edu.javeriana</groupId>
+                            <artifactId>rm-data</artifactId>
+                            <bundleFileName>rm-data.jar</bundleFileName>
+                        </ejbModule>
+                        <webModule>
+                            <groupId>co.edu.javeriana</groupId>
+                            <artifactId>rm-web</artifactId>
+                            <bundleFileName>rm-web.war</bundleFileName>
+                            <contextRoot>/</contextRoot>
+                        </webModule>
+                    </modules>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
