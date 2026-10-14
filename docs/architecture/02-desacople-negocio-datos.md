@@ -1,6 +1,6 @@
 # 02 – Desacople entre el tier de negocio y el de datos
 
-La clave está en que las dependencias de **compilación** y las de **invocación** apuntan en
+Logramos el desacople haciendo que las dependencias de **compilación** y las de **invocación** apunten en
 sentidos opuestos.
 
 ```mermaid
@@ -21,11 +21,11 @@ flowchart TB
     end
 ```
 
-`rm-business` no declara a `rm-data` en su POM y no importa ni una de sus clases. La
-implementación se resuelve en despliegue, porque `JpaResourceRequestRepository` publica la vista
+`rm-business` no declara a `rm-data` en su POM y no importa sus clases. La
+implementación se resuelve al hacer deploy, porque `JpaResourceRequestRepository` publica la vista
 `@Local(ResourceRequestRepository.class)`.
 
-## Qué hace cada pieza
+## Qué hace cada elemento
 
 | Pieza | Responsabilidad | Lo que nunca hace |
 |---|---|---|
@@ -35,20 +35,8 @@ implementación se resuelve en despliegue, porque `JpaResourceRequestRepository`
 | `ResourceRequestRepository` | Declara lo que el negocio necesita | Decidir qué es un error |
 | `JpaResourceRequestRepository` | `persist`, `find`, JPQL | Validar, lanzar excepciones de negocio |
 
-## Por qué el contrato vive en el dominio
 
-Si la interfaz estuviera en `rm-data`, el negocio dependería del módulo de datos y el desacople
-sería aparente. Al declararla en `rm-domain`, es el negocio quien dicta la forma del contrato y el
-módulo de datos el que se adapta. La flecha de compilación va de datos hacia el dominio.
-
-## Evidencia ejecutable
-
-Las 21 pruebas de `ResourceRequestServiceBeanTest` ejercitan todas las reglas con un repositorio
-simulado por Mockito, sin servidor de aplicaciones y sin base de datos. Que esas pruebas puedan
-existir y pasar es la demostración de que el negocio no depende del mecanismo de persistencia:
-sustituir JPA por una colección en memoria no cambiaría una línea de `rm-business`.
-
-## Frontera transaccional
+## Edge transaccional
 
 El negocio declara `@TransactionAttribute(REQUIRED)` y el tier de datos `MANDATORY`. El repositorio
 nunca abre una transacción propia, así que cualquier intento de usarlo fuera de una operación de
