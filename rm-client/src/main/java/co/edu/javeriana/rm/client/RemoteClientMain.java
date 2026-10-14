@@ -11,7 +11,7 @@ import javax.naming.Context;
 import javax.naming.InitialContext;
 
 /**
- * Invoca el tier de negocio desde otra JVM, por la vista remota del EJB y sin pasar por HTTP.
+ * Invoca el tier de negocio desde otra JVM, por la vista remota del EJB.
  */
 public final class RemoteClientMain {
 
