@@ -14,9 +14,6 @@ import java.time.Instant;
 
 /**
  * Solicitud de recursos de un centro de atención durante una emergencia.
- *
- * Sin constructor público ni setters: la solicitud solo se crea con register y solo cambia de
- * estado con fulfill, así que ninguna capa puede saltarse esas validaciones.
  */
 @Entity
 @Table(name = "resource_request")
