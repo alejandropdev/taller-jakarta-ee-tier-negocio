@@ -29,7 +29,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 /**
- * Las reglas se verifican con el repositorio simulado, sin servidor de aplicaciones ni base de datos.
+ * Las reglas se verifican con el repositorio simulado.
  */
 @ExtendWith(MockitoExtension.class)
 class ResourceRequestServiceBeanTest {
