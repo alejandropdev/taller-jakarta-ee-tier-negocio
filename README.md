@@ -1,97 +1,48 @@
 # Taller No.2 – Jakarta EE (Tier de Negocio)
 
-Módulo de gestión de solicitudes de recursos en emergencias sobre **Jakarta EE 10 + WildFly 37**.
-El tier de negocio son **EJB de sesión sin estado** y queda desacoplado del mecanismo de
-persistencia mediante un contrato declarado en el dominio.
+Módulo de gestión de solicitudes de recursos en emergencias. El tier de negocio son EJB de sesión
+sin estado sobre Jakarta EE 10 y WildFly 37, desacoplados del mecanismo de persistencia.
 
-*Arquitectura de Software · Pontificia Universidad Javeriana.*
+*Arquitectura de Software · Pontificia Universidad Javeriana · Alejandro Parrado.*
+
+## Entregables
+
+### 1. Código fuente
+
+| Módulo | Contenido |
+|--------|-----------|
+| `rm-domain` | Entidad, contrato de repositorio, excepciones y DTO |
+| `rm-business` | EJB de sesión con las reglas de negocio, vistas `@Local` y `@Remote` |
+| `rm-data` | Implementación JPA del contrato del dominio |
+| `rm-web` | Fachada REST |
+| `rm-ear` | Empaquetado desplegable |
+| `rm-client` | Cliente en otra JVM que invoca el EJB por JNDI |
+
+### 2. Diseño de la arquitectura
 
 | Documento | Contenido |
 |-----------|-----------|
-| [docs/architecture/](docs/architecture/README.md) | Diagramas de componentes, secuencias, estados y la explicación del desacople (PDF en [pdf/](docs/architecture/pdf/)) |
-| [docs/evaluacion-final.md](docs/evaluacion-final.md) | Cada requisito contra el código y su evidencia |
+| [docs/architecture/](docs/architecture/README.md) | Índice, stack y justificación del tipo de EJB |
+| [01-componentes.md](docs/architecture/01-componentes.md) | Componentes y contenido del EAR |
+| [**02-desacople-negocio-datos.md**](docs/architecture/02-desacople-negocio-datos.md) | **Cómo se desacopló el tier de negocio del tier de datos** |
+| [03-secuencia-registrar.md](docs/architecture/03-secuencia-registrar.md) · [04-secuencia-atender.md](docs/architecture/04-secuencia-atender.md) | Flujos de las dos operaciones de escritura |
+| [05-estados.md](docs/architecture/05-estados.md) | Máquina de estados y dónde se hace cumplir cada regla |
+| [06-modelo-datos.md](docs/architecture/06-modelo-datos.md) | Tabla, unidad de persistencia y datasource |
 
-## Estructura
+Los mismos documentos renderizados están en [docs/architecture/pdf/](docs/architecture/pdf/).
 
-```
-rm-domain    Entidad, contrato de repositorio, excepciones y DTO. No depende de nadie.
-rm-business  EJB de sesión con las reglas de negocio + vistas @Local y @Remote.
-rm-data      Implementación JPA del contrato del dominio.
-rm-web       Fachada REST sobre la vista local del EJB.
-rm-ear       Empaquetado desplegable.
-rm-client    Cliente en otra JVM que invoca la vista remota por JNDI.
-```
+### 3. Evidencias de funcionamiento
 
-El EAR desplegado contiene `lib/rm-domain.jar`, `rm-business.jar`, `rm-data.jar` y `rm-web.war`.
+| Evidencia | Cómo reproducirla |
+|-----------|-------------------|
+| 24 pruebas unitarias de las reglas de negocio | `mvn -B test` |
+| 28 comprobaciones sobre el módulo desplegado | `docker compose up -d --build` y luego `./scripts/pruebas-e2e.sh` |
+| Invocación remota del EJB por JNDI | `mvn -q install -DskipTests` y luego `mvn -q -pl rm-client exec:java` |
 
-## Requisitos
+## Requisitos para ejecutar
 
-- Docker con Docker Compose v2. Para levantar el servidor no hace falta Java ni Maven: el
-  `Dockerfile` compila el proyecto y ejecuta las pruebas unitarias.
-- Java 17 o superior y Maven, solo para ejecutar el cliente remoto desde la máquina local.
-- Puertos libres: `8080` (API y EJB remoto) y `9990` (consola de WildFly).
-- Para las pruebas de extremo a extremo: `bash`, `curl` y `jq`.
+Docker con Compose v2 y los puertos `8080` y `9990` libres. Para el cliente remoto y las pruebas
+unitarias, Java 17 o superior y Maven. Para el script de extremo a extremo, `curl` y `jq`.
 
-## Ejecución
-
-```bash
-docker compose up -d --build    # compila, ejecuta las pruebas unitarias y despliega el EAR
-docker compose logs -f wildfly  # traza del despliegue y los nombres JNDI publicados
-docker compose down             # detener (H2 es en memoria: la base arranca vacía cada vez)
-```
-
-La API queda en `http://localhost:8080/api`.
-
-## API
-
-| Operación | Petición | Respuesta |
-|-----------|----------|-----------|
-| Registrar | `POST /api/resource-requests` | `201` con `Location` y la solicitud en estado `PENDIENTE` |
-| Consultar todas | `GET /api/resource-requests` | `200` con el arreglo de solicitudes |
-| Consultar por id | `GET /api/resource-requests/{id}` | `200`, o `404` si no existe |
-| Consultar pendientes | `GET /api/resource-requests/pending` | `200` con las que siguen en `PENDIENTE` |
-| Atender | `POST /api/resource-requests/{id}/fulfillment` | `200` con estado `ATENDIDA`, `404` si no existe, `409` si ya fue atendida |
-
-Cuerpo de registro:
-
-```json
-{
-  "disasterDescription": "Inundación en la ribera del río",
-  "resourceType": "Agua potable",
-  "quantity": 250,
-  "priority": "ALTA"
-}
-```
-
-Las validaciones no están en este cuerpo ni en el recurso REST: las hace el EJB de sesión.
-
-## Cliente remoto (EJB por JNDI)
-
-```bash
-mvn -q install -DskipTests     # publica los módulos en el repositorio local
-mvn -q -pl rm-client exec:java
-```
-
-Invoca `ResourceRequestServiceRemote` con el nombre
-`ejb:resource-management/rm-business/ResourceRequestServiceBean!co.edu.javeriana.rm.business.ResourceRequestServiceRemote`
-sobre `http-remoting://localhost:8080`, autenticándose con el usuario de aplicación `rmclient`
-que crea la imagen. Las credenciales y la URL se pueden cambiar con `-Drm.user`, `-Drm.password`
-y `-Drm.provider.url`.
-
-## Pruebas
-
-| Tipo | Comando | Cobertura |
-|------|---------|-----------|
-| Unitarias | `mvn -B test` | 24 pruebas: las reglas de negocio con el repositorio simulado y los invariantes de la entidad |
-| Extremo a extremo | `./scripts/pruebas-e2e.sh` | 28 comprobaciones sobre el stack levantado, incluida la invocación remota |
-
-`SIN_CLIENTE=1 ./scripts/pruebas-e2e.sh` omite la parte del cliente remoto.
-
-## Documentación en PDF
-
-```bash
-./scripts/render-docs.sh        # regenera docs/architecture/pdf/*.pdf
-```
-
-Convierte los diagramas Mermaid con `mermaid-cli`, arma el HTML con pandoc e imprime el PDF con
-Chrome en modo headless.
+La API queda en `http://localhost:8080/api`; los endpoints están en
+[01-componentes.md](docs/architecture/01-componentes.md) y en el propio recurso REST.

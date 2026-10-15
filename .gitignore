@@ -8,3 +8,6 @@ docs/architecture/*.html
 
 # Material de trabajo local, no se versiona
 docs/instructions/
+
+# Notas de trabajo locales, no se versionan
+CLAUDE.md
