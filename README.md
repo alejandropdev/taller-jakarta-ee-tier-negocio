@@ -3,7 +3,8 @@
 Módulo de gestión de solicitudes de recursos en emergencias. El tier de negocio son EJB de sesión
 sin estado sobre Jakarta EE 10 y WildFly 37, desacoplados del mecanismo de persistencia.
 
-*Arquitectura de Software · Pontificia Universidad Javeriana · Alejandro Parrado.*
+*Arquitectura de Software · Pontificia Universidad Javeriana.*
+*Autores: Alejandro Parrado y Diego Jimenez.*
 
 ## Entregables
 
